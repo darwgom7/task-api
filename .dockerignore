@@ -1,0 +1,41 @@
+# Gradle files
+.gradle/
+build/
+
+# Log files
+*.log
+
+# Java compilation files
+*.class
+
+# Jar files (except the executable one)
+!build/libs/*SNAPSHOT.jar
+*.jar
+*.war
+*.zip
+
+# Directories generated during build
+out/
+dist/
+tmp/
+
+# IntelliJ IDEA project files
+.idea/
+*.iml
+*.iws
+*.toml
+
+# Node module files (if you have a frontend part)
+node_modules/
+
+# Mac OS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+
+# Skip git directory
+.git/
+
+# Skip git ignore file (optional)
+.gitignore

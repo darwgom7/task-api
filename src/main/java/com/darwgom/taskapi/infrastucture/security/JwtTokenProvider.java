@@ -40,4 +40,18 @@ public class JwtTokenProvider {
                 .getBody();
         return claims.getId();
     }
+
+    public SecretKey getKey() {
+        return key;
+    }
+
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+
 }

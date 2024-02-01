@@ -22,8 +22,8 @@ public class DataInitializer {
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         List<User> users = Arrays.asList(
-                new User(null, "Jena Doe", "jena.doe@dev.com", passwordEncoder.encode("jen@D03"), null, null),
-                new User(null, "Dave Raave", "dave.raave@dev.com", passwordEncoder.encode("dav3R@v3"), null, null)
+                new User(null, "Jena Doe", "jena.doe@dev.com", passwordEncoder.encode("jen@D03"), null, null, null, null),
+                new User(null, "Dave Raave", "dave.raave@dev.com", passwordEncoder.encode("dav3R@v3"), null, null, null, null)
         );
 
         for (User user : users) {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -71,9 +72,17 @@ public class TaskUseCaseImpl implements TaskUseCase {
     public TaskDTO updateTask(UUID taskId, TaskInputDTO taskInputDTO) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + taskId));
-        task.setTitle(taskInputDTO.getTitle());
-        task.setDescription(taskInputDTO.getDescription());
-        task.setCompleted(taskInputDTO.getCompleted());
+
+        Optional.ofNullable(taskInputDTO.getTitle())
+                .ifPresent(task::setTitle);
+
+        Optional.ofNullable(taskInputDTO.getDescription())
+                .ifPresent(task::setDescription);
+
+        if (taskInputDTO.getCompleted() != null) {
+            task.setCompleted(taskInputDTO.getCompleted());
+        }
+
         Task updatedTask = taskRepository.save(task);
         return modelMapper.map(updatedTask, TaskDTO.class);
     }

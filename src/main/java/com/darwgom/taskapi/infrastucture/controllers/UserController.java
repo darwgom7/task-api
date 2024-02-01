@@ -2,11 +2,14 @@ package com.darwgom.taskapi.infrastucture.controllers;
 
 import com.darwgom.taskapi.application.dto.*;
 import com.darwgom.taskapi.application.usecases.UserUseCase;
+import com.darwgom.taskapi.domain.exceptions.AuthException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +29,27 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> loginUser(@RequestBody LoginDTO loginDTO) {
-        TokenDTO tokenDTO = userUseCase.loginUser(loginDTO);
-        return new ResponseEntity<>(tokenDTO, HttpStatus.OK);
+    public ResponseEntity<String> loginUser(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+        try {
+            String successMessage = userUseCase.loginUser(loginDTO, response);
+            return ResponseEntity.ok(successMessage);
+        } catch (AuthException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logoutUser(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = new Cookie("access_token", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -54,4 +74,23 @@ public class UserController {
         TaskDeleteDTO response = userUseCase.deleteUser(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/isloggedin")
+    public ResponseEntity<Boolean> checkLoggedIn(@CookieValue(name = "access_token", required = false) String token) {
+        boolean isLoggedIn = userUseCase.isLoggedIn(token);
+        return ResponseEntity.ok(isLoggedIn);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+        try {
+            UserDTO userDTO = userUseCase.getCurrentUser(request);
+            return ResponseEntity.ok(userDTO);
+        } catch (AuthException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
 }

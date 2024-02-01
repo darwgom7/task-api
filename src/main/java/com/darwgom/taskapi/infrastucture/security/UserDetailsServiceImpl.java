@@ -28,8 +28,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .authorities(Collections.emptyList())
                 .build();
     }
-
-
-
 }
 
