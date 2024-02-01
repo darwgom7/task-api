@@ -1,17 +1,27 @@
 spring:
+  cloud:
+    gcp:
+      sql:
+        database-name: taskapidb
+        instance-connection-name: upheld-apricot-413014:us-central1:task-db
   datasource:
-    url: jdbc:h2:mem:taskapidb
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        web-allow-others: true
+    #url: jdbc:h2:mem:taskapidb
+    #driverClassName: org.h2.Driver
+    #username: sa
+    #password: ''
+  #h2:
+    #console:
+      #enabled: true
+      #path: /h2-console
+      #settings:
+        #web-allow-others: true
+    #url: jdbc:postgresql://34.136.20.122:5432/taskapidb
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: gLs87<)I{SA=(I7Y
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    #database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
 
