@@ -1,33 +1,34 @@
-# Utilizar una imagen base de OpenJDK que coincida con tu versión de Java
+# Steps image const
+# Use an OpenJDK base image that matches your Java version
 FROM openjdk:17-jdk-slim as build
 
-# Establecer el directorio de trabajo dentro del contenedor
+# Set working directory inside container
 WORKDIR /app
 
-# Copiar el archivo de construcción de Gradle en el contenedor
+# Copy Gradle build file to container
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle settings.gradle ./
 
-# Copiar el código fuente
+# Copy the source code
 COPY src src
 
-# Conceder permisos de ejecución al script de Gradle
+# Grant execute permissions to the Gradle script
 RUN chmod +x ./gradlew
 
-# Compilar el proyecto y saltar los tests
+# Compile the project
 RUN ./gradlew build -x test
 
-# Ejecutar la aplicación con una imagen base de Java más ligera
+# Run the application with a lighter Java base image
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-# Copiar el JAR compilado desde el paso de construcción
+# Copy the compiled JAR from the build step
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# Exponer el puerto en el que se ejecutará la aplicación
+# Expose the port on which the application will run
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
+# Command to run the application
 CMD ["java", "-jar", "app.jar"]
